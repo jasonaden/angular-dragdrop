@@ -59,7 +59,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
 
     if (dragSettings.connectWith) {
       var connectedItems = $droppable.find(dragSettings.connectWith),
-        dropPosition = 0;
+        dropPosition = connectedItems.length;
       if (connectedItems.length) {
         console.log(event.clientX);
         connectedItems.each(function (idx, item) {
@@ -262,7 +262,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
             .draggable(scope.$eval(attrs.jqyouiOptions) || {})
             .draggable({
               start: function(event, ui) {
-                $(this).css('z-index', 99999);
+                $(this).css('z-index', 999999);
                 jqyoui.startXY = $(this).offset();
                 ngDragDropService.callEventCallback(scope, dragSettings.onStart, event, ui);
               },
