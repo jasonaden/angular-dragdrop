@@ -72,7 +72,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
             if (dragSettings.connectWith) {
                 var connectedItems = $droppable.find(dragSettings.connectWith),
                     dropPosition = 0;
-                if ($droppable.attr('data-group-drop')) {
+                if ($droppable.attr('data-group-drop') === 'true') {
                        dropPosition = connectedItems.length;
                 } else if (connectedItems.length) {
                     connectedItems.each(function (idx, item) {
