@@ -1,248 +1,277 @@
 <!DOCTYPE html>
-<html ng-app="drag-and-drop">  
-  <head lang="en">
+<html ng-app="drag-and-drop">
+<head lang="en">
     <meta charset="utf-8">
     <title>Drag &amp; Drop: Prioritize Simulation</title>
     <script src="../components/underscore/underscore-min.js"></script>
     <script src="../components/jquery/jquery.min.js"></script>
-    <script src="../components/jquery-ui/ui/minified/jquery-ui.min.js"></script> 
+    <script src="../components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
     <script src="../components/angular/angular.min.js"></script>
     <script src="../src/angular-dragdrop.js"></script>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      body {
-        padding: 10px
-      }
-      .thumbnail { min-height: 100px !important; }
-      /*.btn-droppable { width: 180px; height: 30px; padding-left: 4px; }*/
-      /*.btn-draggable { width: 160px; }*/
-      /*.over-class {
-        background-color: #ccc;
-      }*/
-      .over-bottom {
-        border-bottom-width: 3px;
-      }
-      .over-top {
-        border-top-width: 3px;
-      }
-      .over-class {
-        border-color: rgba(82, 168, 236, 0.9);
-        outline: 0;
-        outline: thin dotted \9;
-        /* IE6-9 */
-        -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
-        -moz-box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
-        box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
-      }
+        body {
+            padding: 10px
+        }
+
+        .thumbnail {
+            min-height: 100px !important;
+        }
+
+            /*.btn-droppable { width: 180px; height: 30px; padding-left: 4px; }*/
+            /*.btn-draggable { width: 160px; }*/
+            /*.over-class {
+              background-color: #ccc;
+            }*/
+        .over-bottom {
+            border-bottom-width: 3px;
+        }
+
+        .over-top {
+            border-top-width: 3px;
+        }
+
+        .over-class {
+            border-color: rgba(82, 168, 236, 0.9);
+            outline: 0;
+            outline: thin dotted  \9;
+            /* IE6-9 */
+            -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
+            -moz-box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
+            box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
+        }
     </style>
 
     <script type="text/javascript">
-      var App = angular.module('drag-and-drop', ['ngDragDrop']);
+        var App = angular.module('drag-and-drop', ['ngDragDrop']);
 
-      App.controller('oneCtrl', function($scope, $rootScope, $timeout) {
+        App.controller('oneCtrl', function ($scope, $rootScope, $timeout) {
 
-        angular.extend($scope, {
-          newList: [],
-          groups: [],
-          list1: [],
-          list2: [],
-          list3: [],
-          list4: [],
-          list5: [
-            { 'title': 'Hide Installed', 'drag': false, toggleInstalled: true},
-            { 'title': 'Item 2', 'drag': true },
-            { 'title': 'Item 3', 'drag': true },
-            { 'title': 'Item 4 - Installed', 'drag': false, installed: true },
-            { 'title': 'Item 5', 'drag': true },
-            { 'title': 'Item 6', 'drag': true },
-            { 'title': 'Item 7 - Installed', 'drag': false, installed: true },
-            { 'title': 'Item 8', 'drag': true },
-            { 'title': 'Item 9', 'drag': true },
-            { 'title': 'Item 10', 'drag': true },
-            { 'title': 'Item 11', 'drag': true },
-            { 'title': 'Item 12', 'drag': true },
-            { 'title': 'Item 13', 'drag': true }
-          ],
-          optionsList1: {
-            accept: function (dragEl) {
-              if ($scope.list1.length >= 2) {
-                return false;
-              } else {
-                return true;
-              }
-            }
-          },
-          draggableOptions: function () {
-            return {
-              revert: 'invalid',
-              helper: function () {
-                var num = angular.isNumber($scope.list5) ? $scope.list5 : $scope.getSelected($scope.list5).length
-                return '<div class="badge">' + num + '</div>';
-              },
-              cursorAt: { top: 15, left: 22 }
-            };
-          },
-          getSelected: function (list) {
-            return _.filter(list, function (item) {return item.selected;});
-          },
-          forceSelect: function (a, b, c) {
-            var elScope = angular.element(a.target).scope()
-            elScope.item.selected = true;
-            if(!elScope.$$phase) elScope.$digest();
-          },
-          selectOrHide: function (item, list) {
-            if (item.installed) return;
-            if (item.toggleInstalled) {
-              _.each(_.filter(list, function (i) {return i.installed;}), function (installed) {
-                installed.hide = !installed.hide;
-              })
-            } else {
-              item.selected = !item.selected;
-            }
-          },
-          getSelectedIndexes: function (list) {
-            var ret = [];
-            _.each(list, function (item, i) {if (item.selected) ret.push(i);});
-            return ret;
-          },
-          over: function (event, ui) {
-            console.log(event, ui);
-          },
-          dragging: function (event, ui) {
-            $rootScope.$broadcast('evt-drag-sort', {event: event, ui: ui});
-          }
-        });
+            angular.extend($scope, {
+                newList: [],
+                groups: [],
+                list1: [],
+                list2: [],
+                list3: [],
+                list4: [],
+                list5: [
+                    { 'title': 'Hide Installed', 'drag': false, toggleInstalled: true},
+                    { 'title': 'Item 2', 'drag': true },
+                    { 'title': 'Item 3', 'drag': true },
+                    { 'title': 'Item 4 - Installed', 'drag': false, installed: true },
+                    { 'title': 'Item 5', 'drag': true },
+                    { 'title': 'Item 6', 'drag': true },
+                    { 'title': 'Item 7 - Installed', 'drag': false, installed: true },
+                    { 'title': 'Item 8', 'drag': true },
+                    { 'title': 'Item 9', 'drag': true },
+                    { 'title': 'Item 10', 'drag': true },
+                    { 'title': 'Item 11', 'drag': true },
+                    { 'title': 'Item 12', 'drag': true },
+                    { 'title': 'Item 13', 'drag': true }
+                ],
+                optionsList1: {
+                    accept: function (dragEl) {
+                        if ($scope.list1.length >= 2) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                },
+                draggableOptions: function () {
+                    return {
+                        revert: 'invalid',
+                        helper: function (evt, ui) {
+                            var extra = $(evt.currentTarget).hasClass('alert-error') ? 0 : 1;
+                            var num = angular.isNumber($scope.list5) ? $scope.list5 : $scope.getSelected($scope.list5).length
+                            return '<div class="badge" style="z-index: 99999">' + (num + extra) + '</div>';
+                        },
+                        cursorAt: { top: -1, left: -1 }
+                    };
+                },
+                getSelected: function (list) {
+                    return _.filter(list, function (item) {
+                        return item.selected;
+                    });
+                },
+                forceSelect: function (a, b, c) {
+                    var elScope = angular.element(a.target).scope()
+                    elScope.item.selected = true;
+                    if (!elScope.$$phase) elScope.$digest();
+                },
+                selectOrHide: function (item, list) {
+                    if (item.installed) return;
+                    if (item.toggleInstalled) {
+                        _.each(_.filter(list, function (i) {
+                            return i.installed;
+                        }), function (installed) {
+                            installed.hide = !installed.hide;
+                        })
+                    } else {
+                        item.selected = !item.selected;
+                    }
+                },
+                getSelectedIndexes: function (list) {
+                    var ret = [];
+                    _.each(list, function (item, i) {
+                        if (item.selected) ret.push(i);
+                    });
+                    return ret;
+                },
+                onOver: function (evt, ui) {
+                    //when we are over we want to set the table to active and tell the helper that it can be dropped
+                    var $table = $(evt.target).is('table') ? $(evt.target) :  $(evt.target).parents('table');
+                    if (!$table.hasClass('active-table')){
+                        $table.addClass('active-table');
+                    }
 
-        $scope.$watch('newList.length', function (newVal, oldVal) {
-          if(newVal) {
-            var list = [];
-            list = list.concat($scope.newList);
-            $scope.groups.push({
-              name: 'Group' + $scope.groups.length + 1,
-              list: list
+                    ui.helper.addClass('canBeDropped');
+
+                },
+                onDrop: function (evt, ui) {
+                    //get rid of the placeholder when we drop
+                    $('#cp-droppable-placeholder').remove();
+                },
+                onStop: function (evt, ui) {
+                    //get rid of the placeholder when we stop
+                    $('#cp-droppable-placeholder').remove();
+                },
+                onOut: function (evt, ui) {
+                    //when we leave we want remove the active table class and remove the group drop attr.
+                    //also tell the helper it can't be dropped and remove the placeholder
+                    var $table = $(evt.target).is('table') ? $(evt.target) : $(evt.target).parents('table');
+                    if ($table.hasClass('active-table')){
+                        $table.removeClass('active-table');
+                        $table.attr('data-group-drop', false);
+                    }
+
+                    ui.helper.removeClass('canBeDropped');
+                    $('#cp-droppable-placeholder').remove();
+                },
+                dragging: function (evt, ui) {
+                    //this function performs two operations, adding the black line showing the user where they are dropping
+                    //an element. And to set the parent table's data-group-drop attribute
+                    var placeholderTmpl = '<tr id="cp-droppable-placeholder"><td style="height: 1px; background-color: black;"</td> </tr>';
+                    var myTo = evt.target;
+
+                    //make sure we are over a droppable area
+                    if (ui.helper.hasClass('canBeDropped') && myTo.id !== 'cp-droppable-placeholder') {
+                        var placeholder = $('#cp-droppable-placeholder'),
+                                $toEle = $(evt.toElement),
+                                $activeTable = $('table.active-table'),
+                                target,
+                                insertMethod;
+
+                        //if the placeholder doesn't exist in the DOM, we'll create a new one
+                        if (!placeholder.length) {
+                            placeholder = $(placeholderTmpl);
+                        }
+
+                        //if we are on a td, the target will be the parent tr
+                        if ($toEle.is('td')) {
+                            target = $toEle.parent();
+                            insertMethod = 'before';
+                            $activeTable.attr('data-group-drop', false);
+                        } else if($activeTable.length) {
+                            // we are not on a td/tr so we want to set group-drop to true. this will tell the droppable
+                            //directive that we are dropping it onto the table and that it should go on the bottom of the
+                            //array
+                            $activeTable.attr('data-group-drop', true);
+                            return;
+                        } else {
+                            return;
+                        }
+//                          Might need to keep this for later
+//                        if (target.hasClass('disabled') || target.hasClass('nodrag')) {
+//                            placeholder.remove();
+//                            return;
+//                        } else if (target.parent('.cp-prioritize-celllist').hasClass('in') && target.parent('ul').droppable('option', 'disabled')) {
+//                            target.parent('ul').droppable('enable');
+//                        }
+
+                        var targetTopLeft = target.offset(),
+                                targetSize = {x: target.width(), y: target.height() + 8},
+                                targetBottomRight = {top: targetTopLeft.top + targetSize.y, left: targetTopLeft.left + targetSize.x};
+
+                        if (ui.offset.left > targetTopLeft.left && ui.offset.left < targetBottomRight.left && ui.offset.top > targetTopLeft.top && ui.offset.top < targetBottomRight.top) {
+                            // Check if we are above or below the middle point of the tr, this will tell us where to put
+                            //the placeholder tr
+                            if (ui.offset.top > (targetTopLeft.top + targetSize.y / 2)) {
+                                insertMethod = 'after';
+                            } else {
+                                insertMethod = 'before';
+                            }
+                        }
+
+                        // runs the jQuery 'after' or 'before' method, passing in the placeholder
+                        target[insertMethod](placeholder);
+                    }
+                }
             });
-          }
-          $scope.newList.length = 0
+
+            $scope.$watch('newList.length', function (newVal, oldVal) {
+                if (newVal) {
+                    var list = [];
+                    list = list.concat($scope.newList);
+                    $scope.groups.push({
+                        name: 'Group' + $scope.groups.length + 1,
+                        list: list
+                    });
+                }
+                $scope.newList.length = 0
+            });
+
         });
-
-      });
     </script>
-  </head>  
-  <body>
-    <div ng-controller="oneCtrl">
-      <div class='contentWrapper ng-cloak'>
-          <div class="row-fluid">
-              <div class="span6">
-                  <div class='content'>
-                      <div class="row-fluid">
-                          <ul class="thumbnails">
-                              <!--<li class="span12" style='margin-left:10px;'>
-                                  <div class="thumbnail" data-drop="true" ng-model='list1'
-                                       data-jqyoui-options="optionsList1"
-                                       jqyoui-droppable="{multiple:true}">
-                                      <div class="caption">
-                                          <div class="alert" ng-repeat="item in list1"
-                                               ng-show="item.title" data-drag="{{item.drag}}"
-                                               data-jqyoui-options="{revert: 'invalid'}" ng-model="list1"
-                                               jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
-                                          </div>
-                                      </div>
-                                  </div>
-                              </li>-->
-                              <li class="span12" style='margin-left:10px;'>
-                                  <!-- jqyoui-droppable wires up the droppable
-                                       ng-model is where the dragged items will go to
-                                       multiple: true means that the model is an array
-
-                                       $droppable = element
-                                       droppableScope = $droppable.scope()
-                                       dropModel = 'list2'
-                                       dropModelValue = scope.list2
-                                       dropSettings = {multiple:true}
-                                       -->
-                                  <!--<div class="thumbnail" data-drop="true" ng-model='list2' jqyoui-options="{onMove: 'over', hoverClass: 'over-class'}"
-                                       jqyoui-droppable="{multiple:true}">&lt;!&ndash;data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list2])'}"&ndash;&gt;
-                                      <div class="caption">
-
-                                          <div class="alert" ng-repeat="item in list2"
-                                               ng-show="item.title" data-drag="{{item.drag}}"
-                                               data-jqyoui-options="{revert: 'invalid'}" ng-model="list2"
-                                               jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
-                                          </div>
-                                      </div>
-                                  </div>-->
-                                <div class="thumbnail" data-drop="true" ng-model="group.list" jqyoui-options="{onMove: 'over', hoverClass: 'over-class'}"
-                                     jqyoui-droppable="{multiple:true}" data-ng-repeat="group in groups"><!--data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list2])'}"-->
-                                  <div class="caption">
-
-                                    <div class="alert" ng-repeat="item in group.list"
-                                         ng-show="item.title" data-drag="{{item.drag}}"
-                                         data-jqyoui-options="{revert: 'invalid'}" ng-model="group.list"
-                                         jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <!--<li class="span12" style='margin-left:10px;'>
-                                  <div class="thumbnail" data-drop="true" ng-model='list3'
-                                       data-jqyoui-options="{accept:':not([ng-model=list3])'}"
-                                       jqyoui-droppable="{multiple:true}">
-                                      <div class="caption">
-                                          <div class="alert" ng-repeat="item in list3"
-                                               ng-show="item.title" data-drag="{{item.drag}}"
-                                               data-jqyoui-options="{revert: 'invalid'}" ng-model="list3"
-                                               jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
-                                          </div>
-                                      </div>
-                                  </div>
-                              </li>
-                              <li class="span12" style='margin-left:10px;'>
-                                  <div class="thumbnail" data-drop="true" ng-model='list4'
-                                       data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list4])'}"
-                                       jqyoui-droppable="{multiple:true}">
-                                      <div class="caption">
-                                          <div class="alert" ng-repeat="item in list4"
-                                               ng-show="item.title" data-drag="{{item.drag}}"
-                                               data-jqyoui-options="{revert: 'invalid'}" ng-model="list4"
-                                               jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
-                                          </div>
-                                      </div>
-                                  </div>
-                              </li>-->
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-              <div class="span6">
-                  <div class="well" jqyoui-droppable="{multiple: true}" jqyoui-options="{hoverClass: 'over-class'}" ng-model="newList" data-drop="true">
-                    <div class="container">
-                      Drop items here!
+</head>
+<body>
+<div ng-controller="oneCtrl">
+    <div class='contentWrapper ng-cloak'>
+        <div class="row-fluid">
+            <div class="span6">
+                <div class='content'>
+                    <div class="row-fluid">
+                        <div class="thumbnails">
+                            <div class="span12" style='margin-left:10px;'>
+                                <table class="thumbnail" data-drop="true" ng-model="group.list" jqyoui-options="{hoverClass: 'over-class'}"
+                                       jqyoui-droppable="{multiple:true, onOver: 'onOver', onDrop: 'onDrop', onOut: 'onOut'}"
+                                       data-ng-repeat="group in groups">
+                                    <tr ng-repeat="item in group.list">
+                                        <td class="alert"
+                                            ng-show="item.title" data-drag="{{item.drag}}"
+                                            data-jqyoui-options="{revert: 'invalid'}" ng-model="group.list"
+                                            jqyoui-draggable="{index: {{$index}},animate:true}">{{item.title}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="navbar-inner">
-                      <div class="container" style="text-align: center;" jqyoui-droppable="{multiple: true}">
-                          <div ng-repeat="item in list5" data-drop="true" ng-model='list5'
-                              data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list5])'}">
-                              <!--
-                                $draggable = element
-                                draggableScope = $draggable.scope()
-                                dragModel = 'list5'
-                                dragModelValue = scope.list5
-                                dragSettings = jqyoui-draggable attribute
-
-
-                              -->
-                              <div class="alert" data-ng-class="{'alert-error': item.selected, 'alert-info': item.installed}" data-drag="{{item.drag}}" data-ng-click="selectOrHide(item, list5)"
-                                   data-jqyoui-options="draggableOptions()" ng-model="list5"
-                                   jqyoui-draggable="{index: getSelectedIndexes(list5),placeholder:false,animate:false,getDragged: 'getSelected(list5)',multiple: true, onStart: 'forceSelect', connectWith: '.alert', onDrag: 'dragging'}"
-                                   ng-hide="item.hide">{{item.title}}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="well" jqyoui-droppable="{multiple: true}" jqyoui-options="{hoverClass: 'over-class'}"
+                     ng-model="newList" data-drop="true">
+                    <div class="container">
+                        Drop items here!
+                    </div>
+                </div>
+                <table class="navbar-inner" ng-model="list5" data-drop="true" jqyoui-droppable="{multiple: true, onOver: 'onOver', onDrop: 'onDrop', onOut: 'onOut'}">
+                    <tr ng-repeat="item in list5" ng-model='list5'
+                        data-jqyoui-options="{accept:'.btn-draggable:not([ng-model=list5])'}">
+                        <td class="alert" data-ng-class="{'alert-error': item.selected, 'alert-info': item.installed}"
+                            data-drag="{{item.drag}}" data-ng-click="selectOrHide(item, list5)"
+                            data-jqyoui-options="draggableOptions()" ng-model="list5"
+                            jqyoui-draggable="{index: getSelectedIndexes(list5),placeholder:false,animate:false,
+                            getDragged: 'getSelected(list5)',multiple: true, onStart: 'forceSelect',
+                             connectWith: '.alert', onDrag: 'dragging', hoverPlaceHolder: true, onStop:'onStop'}"
+                            ng-hide="item.hide">{{item.title}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
-  </body>
+</div>
+</body>
 </html>
