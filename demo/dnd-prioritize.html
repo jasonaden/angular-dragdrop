@@ -40,12 +40,21 @@
             -moz-box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
             box-shadow: 0 0 8px rgba(82, 168, 236, 1), 0 0 8px rgba(82, 168, 236, 0.9);
         }
+        .top {
+            border-color: darkred;
+        }
+
+        .bottom {
+            border-color: blue;
+        }
     </style>
 
     <script type="text/javascript">
         var App = angular.module('drag-and-drop', ['ngDragDrop']);
 
         App.controller('oneCtrl', function ($scope, $rootScope, $timeout) {
+            var cssTop = 'top',
+                    cssBottom = 'bottom'
 
             angular.extend($scope, {
                 newList: [],
@@ -129,12 +138,14 @@
 
                 },
                 onDrop: function (evt, ui) {
-                    //get rid of the placeholder when we drop
-                    $('#cp-droppable-placeholder').remove();
+                    //get rid of the cssTop and cssBottom classes
+                    $('.' + cssTop).removeClass(cssTop);
+                    $('.' + cssBottom).removeClass(cssBottom);
                 },
                 onStop: function (evt, ui) {
-                    //get rid of the placeholder when we stop
-                    $('#cp-droppable-placeholder').remove();
+                    //get rid of the cssTop and cssBottom classes
+                    $('.' + cssTop).removeClass(cssTop);
+                    $('.' + cssBottom).removeClass(cssBottom);
                 },
                 onOut: function (evt, ui) {
                     //when we leave we want remove the active table class and remove the group drop attr.
@@ -146,7 +157,9 @@
                     }
 
                     ui.helper.removeClass('canBeDropped');
-                    $('#cp-droppable-placeholder').remove();
+                    //get rid of the cssTop and cssBottom classes
+                    $('.' + cssTop).removeClass(cssTop);
+                    $('.' + cssBottom).removeClass(cssBottom);
                 },
                 dragging: function (evt, ui) {
                     //this function performs two operations, adding the black line showing the user where they are dropping
@@ -156,21 +169,25 @@
 
                     //make sure we are over a droppable area
                     if (ui.helper.hasClass('canBeDropped') && myTo.id !== 'cp-droppable-placeholder') {
-                        var placeholder = $('#cp-droppable-placeholder'),
-                                $toEle = $(evt.toElement),
+                        var $toEle = $(evt.toElement),
                                 $activeTable = $('table.active-table'),
                                 target,
-                                insertMethod;
+                                barOnTop;
 
-                        //if the placeholder doesn't exist in the DOM, we'll create a new one
-                        if (!placeholder.length) {
-                            placeholder = $(placeholderTmpl);
-                        }
+
+                        //remove the current css classes
+                        $('.' + cssTop).removeClass(cssTop);
+                        $('.' + cssBottom).removeClass(cssBottom);
+
+//                        //if the placeholder doesn't exist in the DOM, we'll create a new one
+//                        if (!placeholder.length) {
+//                            placeholder = $(placeholderTmpl);
+//                        }
 
                         //if we are on a td, the target will be the parent tr
                         if ($toEle.is('td')) {
                             target = $toEle.parent();
-                            insertMethod = 'before';
+                            barOnTop = false;
                             $activeTable.attr('data-group-drop', false);
                         } else if($activeTable.length) {
                             // we are not on a td/tr so we want to set group-drop to true. this will tell the droppable
@@ -197,14 +214,18 @@
                             // Check if we are above or below the middle point of the tr, this will tell us where to put
                             //the placeholder tr
                             if (ui.offset.top > (targetTopLeft.top + targetSize.y / 2)) {
-                                insertMethod = 'after';
+                                barOnTop = false;
                             } else {
-                                insertMethod = 'before';
+                                barOnTop = true;
                             }
                         }
 
-                        // runs the jQuery 'after' or 'before' method, passing in the placeholder
-                        target[insertMethod](placeholder);
+                        // adds the bar class
+                        if (barOnTop){
+                            target.addClass(cssTop);
+                        } else {
+                            target.addClass(cssBottom);
+                        }
                     }
                 }
             });
