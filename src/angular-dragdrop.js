@@ -77,10 +77,10 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                 } else if (connectedItems.length) {
                     connectedItems.each(function (idx, item) {
                         var $item = $(item);
-                        if (event.clientY > ($item.offset().top + $item.outerHeight() / 2)) {
+                        if (event.pageY > ($item.offset().top + $item.outerHeight() / 2)) {
                             dropPosition = idx + 1;
                         }
-                    })
+                    });
                 }
 
             }
