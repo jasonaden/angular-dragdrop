@@ -77,8 +77,13 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                 } else if (connectedItems.length) {
                     connectedItems.each(function (idx, item) {
                         var $item = $(item);
-                        if (event.pageY > ($item.offset().top + $item.outerHeight() / 2)) {
+                        //if the item is disabled, we want to skip it's index (the droppable have to go below it)
+                        if($item.hasClass('ui-draggable-disabled')){
                             dropPosition = idx + 1;
+                        } else {
+                            if (event.pageY > ($item.offset().top + $item.outerHeight() / 2)) {
+                                dropPosition = idx + 1;
+                            }
                         }
                     });
                 }
