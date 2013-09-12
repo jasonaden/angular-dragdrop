@@ -77,10 +77,15 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                 } else if (connectedItems.length) {
                     connectedItems.each(function (idx, item) {
                         var $item = $(item);
-                        if (event.clientY > ($item.offset().top + $item.outerHeight() / 2)) {
+                        //if the item is disabled, we want to skip it's index (the droppable have to go below it)
+                        if($item.hasClass('ui-draggable-disabled')){
                             dropPosition = idx + 1;
+                        } else {
+                            if (event.pageY > ($item.offset().top + $item.outerHeight() / 2)) {
+                                dropPosition = idx + 1;
+                            }
                         }
-                    })
+                    });
                 }
 
             }
@@ -233,7 +238,7 @@ var jqyoui = angular.module('ngDragDrop', []).service('ngDragDropService', ['$ti
                             // TODO: Add code for index === array
                             if (angular.isArray(dragSettings.index)) {
                                 for (var i = dragSettings.index.length - 1; i >= 0; i--) {
-                                    dragModelValue.splice(dragSettings.index[i], 1);
+                                    dragModelValue.splice(dragModelValue.indexOf(dragModelValue[dragSettings.index[i]]), 1);
                                 }
                                 // jaden - Adding so that we do single items only when appropriate. Allows for multiple items to be dragged.
                             } else if (!isNaN(parseInt(dragSettings.index))) {
